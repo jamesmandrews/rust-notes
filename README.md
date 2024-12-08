@@ -270,25 +270,234 @@ let added = addIntegers(1,2);
 let add
 ```
 
-## Ownership
+### Ownership
 
-Rust has a concept of variable ownership.  What this means is that when a variable is passed to a function or macro it becomes the owner, once taken by a function or macro it no longer exists in the calling function.
+#### Key Principles of Ownership
+* Ownership: Each value in Rust has a single owner, which is the variable that holds it.
+* Ownership Transfer (Move): When ownership is transferred, the previous owner can no longer use the value.
+Scope and Lifespan: A value is dropped (deallocated) when its owner goes out of scope.
 
+#### Rules of Ownership
+* Each value has one owner: A value can only be owned by one variable at a time.
+* Ownership transfer on assignment: When assigning or passing a value to another variable, ownership is transferred unless the type is a copy type.
+* Automatic deallocation: When the owner of a value goes out of scope, Rust automatically frees the memory for the value.
+
+#### Copy Types vs. Non-Copy Types
+
+##### Copy Types:
+Simple, fixed-size types that implement the Copy trait.
+Instead of transferring ownership, they are copied on assignment or function calls.
+**Examples**:
+* Scalars: integers (i32, u64), floats (f32, f64), bool, char.
+* Fixed-size collections: arrays (e.g., [i32; 3]), tuples (e.g., (i32, f64)) if all components are Copy.
+
+##### Non-Copy Types:
+Types that do not implement the Copy trait and rely on ownership transfer.
+Typically, these manage heap memory or other resources.
+**Examples**:
+* String, Vec<T>, Box<T>, HashMap<K, V>.
+* Custom types (e.g., structs) unless explicitly marked Copy and all fields are Copy.
+
+###### Examples
+###### Ownership Transfer (Move) for Non-Copy Types
+```
+let s1 = String::from("hello"); // String is a non-Copy type
+let s2 = s1; // Ownership is transferred (moved) to s2
+// println!("{}", s1); // Error: s1 is no longer valid
+```
+
+###### Copy Behavior
+```
+let x = 5; // i32 is a Copy type
+let y = x; // x is copied into y
+println!("x: {}, y: {}", x, y); // Both x and y are valid
+```
+###### Function Calls
+* Non-Copy Type:
+```
+let s = String::from("hello");
+takes_ownership(s); // Ownership of s is transferred to the function
+// println!("{}", s); // Error: s is no longer valid
+
+fn takes_ownership(s: String) {
+    println!("{}", s);
+}
+```
+
+* Copy Type:
 
 ```
-fn addIntegers(a: i64. b: i64) -> i32 {
-    let sum = a + b;
-    sum
-}
+let n = 42;
+makes_copy(n); // n is copied into the function
+println!("{}", n); // n is still valid
 
-
-fn main  {
-  let added = addIntegers(1,2); // adds 2 integers together.
-  println!("{}", added); // variable passed to println! macro prints to screen
-  let added2 = addIntegers(added, 5); // fails because added was passed to println! and no longer exists.
+fn makes_copy(n: i32) {
+    println!("{}", n);
 }
 ```
 
+##### Borrowing and References
+Borrowing lets you use a value without taking ownership.
+Two types:
+* Immutable Borrow (&): Multiple borrows allowed.
+* Mutable Borrow (&mut): Only one mutable borrow allowed at a time.
+```
+let s = String::from("hello");
+let len = calculate_length(&s); // Borrow s with `&`
+println!("Length: {}", len); // s is still valid
 
+fn calculate_length(s: &String) -> usize {
+    s.len() // Borrowed value is read-only
+}
+```
 
+##### Summary of Ownership with Data Types
+* Copy types: Scalars (e.g., integers, floats, booleans) and simple composite types (e.g., small arrays, tuples) are copied, not moved.
+* Non-Copy types: Heap-allocated data (e.g., String, Vec<T>) and custom types follow the move semantics for ownership transfer.
+* Rust’s ownership system ensures memory safety by managing moves, copies, and borrows at compile time.
 
+### Slice Types
+Are a type that allows us to access part of a collection or a string as a reference.
+
+```
+let message = String::from("Hello world");
+let hello = &message[0..5];
+```
+
+In the above example we want to copy the word `Hello` into the variable `hello`.  To do this we treat the string as an array each letter is an index.  `H` being index 0 and `o` being index 4.  In our delcaration for variable hello we use `&message` to get a reference to the `message` variable, and then use `[0..5]` to get the positions for the word `Hello`.  The 2nd index value must be 1 greater than the last index you want to slice.
+
+## Structs
+
+### Defining a struct
+Are custom data types that allow you to structure related data together as a single variable.  Below is an example of what a struct might look like for a `User` object with various attributes.
+
+```
+struct User {
+    name: String,
+    email: String,
+    active: bool,
+    login_count: i64
+}
+
+fun main() {
+
+    let user = User {
+        name: String::from("Alice),
+        email: String::from("alice@example.com"),
+        active: true,
+        login_count: 1        
+    };
+
+    println!("name: {}, email: {}", user.name, user.email);
+}
+
+```
+
+### Struct methods.
+A method is a function that is associated with a struct, you define methods using the 'impl' keyword and the name of the struct it is associated with.  In this case our `User` struct
+
+```
+struct User {
+    name: String,
+    email: String,
+    active: bool,
+    login_count: i64
+}
+
+impl User {
+    fn print_info(&self) {
+        println!("name: {}, email: {}", self.name, self.email);
+    }
+}
+
+fun main() {
+
+    let user = User {
+        name: String::from("Alice),
+        email: String::from("alice@example.com"),
+        active: true,
+        login_count: 1        
+    };
+
+    user.print_info();
+}
+
+```
+
+## Enum
+
+In Rust, enums (short for enumerations) allow you to define a type by enumerating its possible variants. Each variant can optionally carry data of different types, making enums a versatile way to represent and work with structured data.
+
+Key Features of Rust Enums:
+Variants: Define a set of distinct, named alternatives for a type.
+Data Association: Each variant can optionally include associated data, similar to a tuple or struct.
+Pattern Matching: Enums work seamlessly with Rust's powerful match expressions, allowing exhaustive handling of all possible variants.
+Example:
+rust
+Copy code
+enum Message {
+    Quit,                       // No associated data
+    Move { x: i32, y: i32 },    // Struct-like associated data
+    Write(String),              // Tuple-like associated data
+    ChangeColor(i32, i32, i32), // Multiple values
+}
+
+fn process_message(msg: Message) {
+    match msg {
+        Message::Quit => println!("Quit message received."),
+        Message::Move { x, y } => println!("Move to ({}, {}).", x, y),
+        Message::Write(text) => println!("Message: {}", text),
+        Message::ChangeColor(r, g, b) => println!("Change color to RGB({}, {}, {}).", r, g, b),
+    }
+}
+
+fn main() {
+    let msg = Message::Move { x: 10, y: 20 };
+    process_message(msg);
+}
+Enums are ideal when a value can be one of several different kinds of data, and they are a core feature in Rust for modeling complex systems safely and expressively.
+
+### Option Enum
+The Option enum is used to represent a value that might or might not exist.
+
+#### Variants:
+* None: Represents the absence of a value.
+* Some(T): Wraps a value of type T.
+Example:
+```
+let value: Option<i32> = Some(5);
+let no_value: Option<i32> = None;
+
+if let Some(v) = value {
+    println!("We have a value: {}", v);
+} else {
+    println!("No value present.");
+}
+```
+
+### Result Enum
+The Result enum is used for error handling, representing either success or failure.
+
+#### Variants:
+* Ok(T): Represents success and wraps a value of type T.
+* Err(E): Represents an error and wraps an error value of type E.
+Example:
+
+```
+fn divide(a: i32, b: i32) -> Result<i32, &'static str> {
+    if b == 0 {
+        Err("Division by zero!")
+    } else {
+        Ok(a / b)
+    }
+}
+
+match divide(10, 2) {
+    Ok(result) => println!("Result: {}", result),
+    Err(err) => println!("Error: {}", err),
+}
+```
+
+### Why Are They Special?
+Option and Result are foundational in Rust because they eliminate null and unsafe error handling patterns.
+They're part of the standard library and widely used for safe, idiomatic Rust programming.
