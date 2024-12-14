@@ -433,8 +433,7 @@ Variants: Define a set of distinct, named alternatives for a type.
 Data Association: Each variant can optionally include associated data, similar to a tuple or struct.
 Pattern Matching: Enums work seamlessly with Rust's powerful match expressions, allowing exhaustive handling of all possible variants.
 Example:
-rust
-Copy code
+```
 enum Message {
     Quit,                       // No associated data
     Move { x: i32, y: i32 },    // Struct-like associated data
@@ -455,6 +454,8 @@ fn main() {
     let msg = Message::Move { x: 10, y: 20 };
     process_message(msg);
 }
+```
+
 Enums are ideal when a value can be one of several different kinds of data, and they are a core feature in Rust for modeling complex systems safely and expressively.
 
 ### Option Enum
