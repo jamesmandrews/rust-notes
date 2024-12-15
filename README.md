@@ -564,7 +564,7 @@ fn main {
 }
 ```
 
-## Data Structures
+## Advanced Data Structures
 
 ### Vectors
 
@@ -613,33 +613,229 @@ You can access elements using an index, just like a regular array.
 
 The above code will access the 2nd element of the array at index `1` and store it in a variable.
 
+A safer way to access an element of a vector is using the `get()` method.  If the element doesn't exist it will return `None` enum and if it does the `Some` Enum
+
+```
+  let numbers3: vec![100,200,300,400,500];
+  let index = 5
+  match numbers3.get(index){
+    Some(value) => println!("Value: {}", value);
+    None => println!("No value at index: {}", value);
+  }
+```
+
+Iterating through a vector
+
+```
+let animals = vec!["dog","cat","rabbit"]
+
+// borrowing the vector with &
+for animal in &animals {
+    println("{}", animal);
+}
+```
+
+You can also also borrow a mutable reference to modify the values
+
+```
+let numbers = vec![1,2,3,4,5];
+for number in &mut numbers {
+    number *= 2
+}
+
+println!("{:?}", numbers)
+
+```
+
+You need to be careful when using vecs, when a vec grows out of space it will typically double it's capacity copying the current data into the new memory allocation.  To avoid this you can allocate with capacity.
+
+```
+let mut vec = Vec::with_capaticy(10);
+
+for i in 0..10 {
+    vec.push(1);
+}
+
+println!("Vector: {:?}, Capacity: {}", vec, vec.capacity())
+
+```
+
+### Hash Maps
+
+A hashmap is a collection of key value pairs. `Hashmap<K,V>`  Where `K` is the key type, and `V` is the value type.  The keys are unique and maps to specifically one value.  That value can be of any type.  `Array`, `Enum`, `Struct` etc...
+
+Example on how to create and insert data into a hashmap
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+println!("Population: {:?}, population)
+
+```
+
+Example of accessing a value using a key.
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+match population.get("Tokyo){
+  Some(&value) => println!("Population: {}", value);
+  None => println!("No value at key index: {}", value);
+}
+
+```
+
+To update a value just re-insert it into the hashmap.
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+match population.get("Tokyo){
+  Some(&value) => println!("Population: {}", value);
+  None => println!("No value at key index: {}", value);
+}
+
+population.insert("Tokyo", "57000000);
+
+match population.get("Tokyo){
+  Some(&value) => println!("Population: {}", value);
+  None => println!("No value at key index: {}", value);
+}
+
+```
+
+To remove a key value pair you can use the remove() function on the hashmap using the key you want to remove.
+
+Example of accessing a value using a key.
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+match population.get("Tokyo){
+  Some(&value) => println!("Population: {}", value);
+  None => println!("No value at key index: {}", value);
+}
+
+population.remove("Tokyo");
+
+match population.get("Tokyo){
+  Some(&value) => println!("Population: {}", value);
+  None => println!("No value at key index: {}", value);
+}
+
+```
+
+#### Iterating over Hashmap.
+
+Below you can use a for loop to iterate over the hashmap.
+
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+for (city, population) in &populations {
+  println!("City: {:?}, city, Population: {:?}, population);
+}
+```
+
+Below you can iterate over only the values.
+
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+for population in populations.values() {
+  println!(Population: {:?}, population);
+}
+```
+
+Using the `entry`/`insert` function to insert if a key entry doesn't exist.
 
 
+```
+let mut population = Hashmap.new();
+population.insert("Tokyo", "37000000);
+population.insert("London", "17000000);
+population.insert("Dubai", "7000000);
+
+population.entry("Seatle").insert(2000000);
+population.entry("Dubai").insert(3000000);
+
+for population in populations.values() {
+  println!(Population: {:?}, population);
+}
+```
 
 
+#### Hashmap performance
+For better performance keys should be either String, i32, or usize since they are easier to hash.
+You can also preallocate the capacity the same way as Vectors
+
+```
+let mut scores = HashMap::with_capacity(10);
+for i in 0..5 {
+  scores.insert(i, i*10);
+}
+
+println!("{?:}", scores);
+println!("{}", scores.capacity());
+```
+### Stacks
+
+A stack is a datastruckter that follows the "Last In First Out" principle.  It does this with the `push()` and `pop()` functions.  The `push()` puts an item on the stack, and `pop()` will take from the stack.
 
 
+```
+struct Stack {
+  items: Vec<i32>
+}
 
+impl Stack {
+  fn new() -> Self {
+    Stack { items: Vec::new() }
+  }
 
+  fn push(&mut self, value: i32) {
+    self.items.push(value);
+  }
 
+  fn pop(&mut self) {
+    self.items.pop(value)
+  }
 
+  // Peaks at the top element without removing it.
+  fn peek(&self) -> Option<&i32> {
+    self.items.last()
+  }
+}
 
+fn main() {
+  let mut stack = Stack::new();
+  stack.push(1);
+  stack.push(2);
+  stack.push(3);
 
+  println!("{:?}", stack.peak());
 
+  let popped = stack.pop();
 
+  println!("{:?}", stack.peak());
+}
 
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+### Queue Data Stricture (fifo)
 
 
