@@ -502,3 +502,144 @@ match divide(10, 2) {
 ### Why Are They Special?
 Option and Result are foundational in Rust because they eliminate null and unsafe error handling patterns.
 They're part of the standard library and widely used for safe, idiomatic Rust programming.
+
+## Crates and Modules.
+
+### Crates
+
+Crates are packages of code used to perform specific tasks.
+
+Two kinds of crate.
+  * Binary Crate: are an executable file and must have a main function.  All Rust projects that have a main function would be considered a binary crate. 
+  * Library Crate:  Library crates do not have a main function and can not be executed on their own.
+
+To install a Libray crate to your project use the command below.
+
+```
+cargo add {{packagename}}
+```
+
+When a package is added you should see it added to the `Cargo.toml` file
+
+In order to use a package in our code you must declare it with a `use` statement
+
+Below we tell our code to `use` the `rand::Rng` function from the `rand` package.
+
+```
+use rand::Rng
+
+fn main() {
+  let mut rng = rand::thread_rng();
+  let random_number:u32 = rng.gen_range(0..1000);
+  println!("Random: {}", random_number);
+}
+```
+
+### Modules
+
+Modules are localized library crates, allowing you to organize your code for resuability.
+
+Let's say we have 2 functions for calculating numbers, we will want them in their own module called `calculation`.
+
+Create a file called `caclulation.rs`.  We have 2 functions.  `add` and `subtract`.  To make them available to code outside the `calculation.rs` file you must use the `pub` keyword before the `fn` keyword
+
+```
+pub fn add (a:u32, b:u32) -> u32 {
+  return a + b;
+}
+
+pub fn subtract (a:u32, b:u32) -> u32 {
+  return a - b;
+}
+```
+
+Then in our main.rs file we use the `mod` keyword to include it
+
+```
+mod calculation
+
+fn main {
+  let sum:u32 = calculation::add(1, 4)
+  println!("Sum: {}", sum);
+}
+```
+
+## Data Structures
+
+### Vectors
+
+A `Vec<T>` called a vector is one of the most commonly used data structures in Rust.  It is a resizable array that can hold elements of a specific type `<T>`.  To grow and shrink as needed and are heap allocated.
+
+To declare a vector you use the following format.
+
+```
+let mut numbers: Vec<i32> = Vec::new(); 
+numbers.push(10);
+numbers.push(20);
+numbers.push(30);
+
+
+println!("{:?}", numbers);
+```
+
+You can also create a vector using a vector macro. This is more concise then the previous method.
+
+```
+let mut numbers2: vec![1,2,3,4,5]; 
+println!("{:?}", numbers2);
+```
+
+#### Push and Pop
+
+You use the `push` method to add an item to the end of the array, and the `pop` method to remove an item from the end of the array.
+
+```
+  let mut fruits = vec!["apple", "banana", "orange"]; 
+  fruits.push("grape");
+
+  let removed = fruits.pop();
+  println!("{:?}, Removed: {:?}", fruits, removed);
+```
+
+#### Accessing and modifying elements
+
+You can access elements using an index, just like a regular array.
+
+```
+  let numbers3: vec![100,200,300,400,500]; 
+  let second = numbers3[1];
+  println!("Second: {}", second); 
+```
+
+The above code will access the 2nd element of the array at index `1` and store it in a variable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
