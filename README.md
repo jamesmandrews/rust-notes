@@ -838,4 +838,44 @@ fn main() {
 
 ### Queue Data Stricture (fifo)
 
+A Queue data structure follows the first in first out principle.  It uses the `enqueue` and `dequeue` functions to manage the structure.
 
+```
+struct Queue {
+  items: Vec<i32>
+}
+
+impl Queue {
+  fn new() -> Self {
+    Stack { items: Vec::new() }
+  }
+
+  fn enqueue(&mut self, value: i32) {
+    self.items.push_back(value);
+  }
+
+  fn dequeue(&mut self) {
+    self.items.pop_front();
+  }
+
+  // Peaks at the front element without removing it.
+  fn peek(&self) -> Option<&i32> {
+    self.items.front()
+  }
+
+}
+
+fn main() {
+  let mut queue = Queue::new();
+  queue.enqueue(1);
+  queue.enqueue(2);
+  queue.enqueue(3);
+
+  println!("{:?}", queue.peak());
+
+  let popped = stack.dequeue();
+
+  println!("{:?}", stack.peak());
+}
+
+```
