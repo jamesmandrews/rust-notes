@@ -3,7 +3,7 @@
 ## Getting started
 
 ### Create new Project.
-To create create a new project use the command `cargo run {projectname}`.  Replacing `{projectname}` with the name of your project.  This will create a directory in the directory you have run this command from.
+To create create a new project use the command `cargo new {projectname}`.  Replacing `{projectname}` with the name of your project.  This will create a directory in the directory you have run this command from.
 
 If you want the directory your in to be the project directory you can run `cargo init` and it will build the project in the currect directory you are in.
 
