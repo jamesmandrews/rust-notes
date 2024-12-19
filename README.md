@@ -10,7 +10,7 @@ If you want the directory your in to be the project directory you can run `cargo
 ### Executing your project.
 To execute your project from the base of the project directory use `cargo run`.
 
-## Variablles
+## Variables
 Variables are named locations in mamory used to store values used in data execution.
 
 To create a variable in Rust you need to use the `let` keyword.
